@@ -1,0 +1,48 @@
+[data]
+# Folder containing bigwig files
+bigwig_folder = "../test/bigwig/MSssI"
+# Sample sheet containing the metadata of the bigwig files
+sample_sheet = "../config/MSssI_samplesheet.csv"
+
+[output]
+# prefix of the output files
+# SQL database file will be named as <prefix>.db
+# CSV files will be named as <prefix>.<table name>.csv
+prefix = "Live_MSssI"
+# Folder to store the output files
+output_folder = "../test/MSssI"
+
+[parameter]
+# Normalization method
+# only Mito (or any chromsome name) and Genome are supported
+# Mito: normalize to the mitochondria, must be the same as the chromosome name in the reference genome
+# Genome: normalize to the median of whole genome
+normalization = "Genome"
+# Number of quantiles to divide the genes by adjusted level
+num_quantile = 5
+# Min Pos for sine wave fitting
+xmin = -50
+# Max Pos for sine wave fitting
+xmax = 1000
+
+[resource]
+# Gene annotation file containing +1 dyads and NDR locations for S. cerevisiae genes
+gene_table = "../resource/sacCer3.gene.plus1.csv.gz"
+
+# tRNA element annotation file for S. cerevisiae
+# Format: CSV containing tRNA gene locations and metadata
+trna_table = "../resource/sacCer3.tRNA.element.csv"
+
+# Additional genomic feature annotations
+# Format: CSV containing locations of other genomic elements
+other_table = "../resource/sacCer3.OtherFeature.csv"
+
+# RNA-seq data from GSE110413 study
+# Format: gzipped CSV containing RNA-seq measurements
+# Source: GEO accession GSE110413
+rnaseq_table = "../resource/GSE110413_SM_25min_rnaseq.csv.gz"
+
+# MNase-seq data for nucleosome positioning
+# Format: CSV containing MNase-seq data from NAR 2016 study
+# Source: Ocampo J, et al. Nucleic Acids Research. 2016
+mnase_table = "../resource/NAR_2016.sacCer3.MNase.csv"

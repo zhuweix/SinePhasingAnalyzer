@@ -1,0 +1,66 @@
+[data]
+# Folder containing bigwig files
+bigwig_folder = "../test/bigwig"
+# Sample sheet containing the metadata of the bigwig files
+sample_sheet = "../config/test_samplesheet.csv"
+
+[output]
+# prefix of the output files
+# SQL database file will be named as <prefix>.db
+# CSV files will be named as <prefix>.<table name>.csv
+prefix = "example_test_DpnI"
+# Folder to store the output files
+output_folder = "../test/example_output"
+
+[parameter]
+# Normalization method
+# only Mito (or any chromsome name) and Genome are supported
+# Mito: normalize to the mitochondria, must be the same as the chromosome name in the reference genome
+# Genome: normalize to the median of whole genome
+normalization = "Mito"
+# Number of quantiles to divide the genes by adjusted level
+num_quantile = 5
+# Min Pos for sine wave fitting
+xmin = -50
+# Max Pos for sine wave fitting
+xmax = 1000
+
+[resource]
+# Gene annotation file containing +1 dyads and NDR locations for S. cerevisiae genes
+gene_table = "../resource/sacCer3.gene.plus1.csv.gz"
+
+# tRNA element annotation file for S. cerevisiae
+# Format: CSV containing tRNA gene locations and metadata
+trna_table = "../resource/sacCer3.tRNA.element.csv"
+
+# Additional genomic feature annotations
+# Format: CSV containing locations of other genomic elements
+other_table = "../resource/sacCer3.OtherFeature.csv"
+
+# RNA-seq data from GSE110413 study
+# Format: gzipped CSV containing RNA-seq measurements
+# Source: GEO accession GSE110413
+rnaseq_table = "../resource/GSE110413_SM_25min_rnaseq.csv.gz"
+
+# MNase-seq data for nucleosome positioning
+# Format: CSV containing MNase-seq data from NAR 2016 study
+# Source: Ocampo J, et al. Nucleic Acids Research. 2016
+mnase_table = "../resource/NAR_2016.sacCer3.MNase.csv"
+
+# Plotting parameters
+[plot_parameter]
+# MNase track
+mnase_file = "../resource/NAR_2016.sacCer3.MNase.csv"
+
+# Time course figures
+timecourse_xlabel = "Time after SM addition (min)"
+timecourse_frac_ylabel = "Fraction Methylated\n(Cut by DpnI)"
+timecourse_rate_ylabel = "Methylation Rate"
+timecourse_xlim = [0, 240]
+
+# Gene Phasing figures
+phasing_xlabel = "Relative to +1 Nucleosome (bp)"
+phasing_xlim = [-1000, 1000]
+phasing_ylabel = "Relative Methylation Rate"
+phasing_ylim = [0, 3]
+phasing_ylim_sinewave = [0, 3]

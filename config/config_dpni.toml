@@ -1,0 +1,10 @@
+[reference]
+gene_table="config/sacCer3.gene.plus1.csv"
+
+[data]
+bigwig_folder="/home/xuz5/labdata/xuz5/240326_yeast_mating/submission/data/bigwig/DpnI"
+sample_sheet="config/yeast_strain_samplesheet.csv"
+
+[output]
+prefix="241220_yeast_DpnI"
+output_folder="output/241220_yeast_DpnI"

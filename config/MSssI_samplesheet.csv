@@ -1,0 +1,11 @@
+experiment,rep,time,filename
+WT,Rep1,0,241211_Y827H_MSssI_Rep1_0min.bw
+WT,Rep1,30,241211_Y827H_MSssI_Rep1_30min.bw
+WT,Rep1,60,241211_Y827H_MSssI_Rep1_60min.bw
+WT,Rep1,120,241211_Y827H_MSssI_Rep1_120min.bw
+WT,Rep1,240,241211_Y827H_MSssI_Rep1_240min.bw
+WT,Rep2,0,241211_Y827H_MSssI_Rep2_0min.bw
+WT,Rep2,30,241211_Y827H_MSssI_Rep2_30min.bw
+WT,Rep2,60,241211_Y827H_MSssI_Rep2_60min.bw
+WT,Rep2,120,241211_Y827H_MSssI_Rep2_120min.bw
+WT,Rep2,240,241211_Y827H_MSssI_Rep2_240min.bw

@@ -1,0 +1,13 @@
+experiment,rep,time,filename
+WT,Rep1,0,241221_808H_5_1kb.Filter_0min.bw
+WT,Rep1,30,241221_808H_5_1kb.Filter_30min.bw
+WT,Rep1,60,241221_808H_5_1kb.Filter_60min.bw
+WT,Rep1,120,241221_808H_5_1kb.Filter_120min.bw
+WT,Rep1,180,241221_808H_5_1kb.Filter_180min.bw
+WT,Rep1,240,241221_808H_5_1kb.Filter_240min.bw
+WT,Rep2,0,241221_808P_1_1kb.Filter_0min.bw
+WT,Rep2,30,241221_808P_1_1kb.Filter_30min.bw
+WT,Rep2,60,241221_808P_1_1kb.Filter_60min.bw
+WT,Rep2,120,241221_808P_1_1kb.Filter_120min.bw
+WT,Rep2,180,241221_808P_1_1kb.Filter_180min.bw
+WT,Rep2,240,241221_808P_1_1kb.Filter_240min.bw
