@@ -139,6 +139,7 @@ def prepare_results_for_csv(result_dict: dict, analysis: str) -> pd.DataFrame:
             f"{tmp_dict['Error_Slope']:.2f}",
             f"{tmp_dict['Adj.R2']:.3f}",
             f"{tmp_dict['Decay']:.3f}",
+            f"{tmp_dict['Adj.Mean']:.2f}",
             f"{tmp_dict['theta0']:.2f}",
             f"{tmp_dict['b0']:.3f}"
         ]
@@ -154,6 +155,7 @@ def prepare_results_for_csv(result_dict: dict, analysis: str) -> pd.DataFrame:
             "Slope Error (per kb)",
             "Adjusted R2",
             "Decay per Period",
+            "Adjusted Mean",
             "Phase (theta0)",
             "Baseline (b0)"
         ]
@@ -174,6 +176,8 @@ def prepare_results_for_csv(result_dict: dict, analysis: str) -> pd.DataFrame:
         label_columns = ['GroupName', 'Experiment', 'Rep', 'Time', 'Quantile']  
     columns = label_columns + da_columns              
     results_pd = pd.DataFrame(results_pd, columns=columns)
+    if 'Time' in label_columns:
+        results_pd["Time"] = pd.to_numeric(results_pd["Time"], errors='coerce')
     results_pd.sort_values(by=label_columns, inplace=True)
     return results_pd
 
