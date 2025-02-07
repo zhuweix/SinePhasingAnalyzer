@@ -1,23 +1,23 @@
 [data]
 # Folder containing bigwig files
-bigwig_folder = "../test/bigwig/MSssI"
+bigwig_folder = ".data/bigwig"
 # Sample sheet containing the metadata of the bigwig files
-sample_sheet = "../config/MSssI_samplesheet.csv"
+sample_sheet = "config/example_samplesheet.csv"
 
 [output]
 # prefix of the output files
 # SQL database file will be named as <prefix>.db
 # CSV files will be named as <prefix>.<table name>.csv
-prefix = "Live_MSssI"
+prefix = "test_example"
 # Folder to store the output files
-output_folder = "../test/MSssI"
+output_folder = "data/example_output"
 
 [parameter]
 # Normalization method
 # only Mito (or any chromsome name) and Genome are supported
 # Mito: normalize to the mitochondria, must be the same as the chromosome name in the reference genome
 # Genome: normalize to the median of whole genome
-normalization = "Genome"
+normalization = "Mito"
 # Number of quantiles to divide the genes by adjusted level
 num_quantile = 5
 # Min Pos for sine wave fitting
@@ -49,14 +49,15 @@ mnase_table = "../resource/NAR_2016.sacCer3.MNase.csv"
 
 # Plotting parameters
 [plot_parameter]
+
 # Time course figures
 timecourse_xlabel = "Time after SM addition (min)"
-timecourse_frac_ylabel = "Fraction Methylated"
+timecourse_frac_ylabel = "Fraction Methylated\n(Cut by DpnI)"
 timecourse_xlim = [0, 240]
 
 # Gene Phasing figures
 phasing_xlabel = "Relative to +1 Nucleosome (bp)"
 phasing_xlim = [-1000, 1000]
 phasing_ylabel = "Relative Methylation Rate"
-phasing_ylim = [0, 3.2]
-phasing_ylim_sinewave = [0, 3]
+phasing_ylim = [0, 2]
+phasing_ylim_sinewave = [0, 1.75]

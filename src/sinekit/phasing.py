@@ -1,13 +1,14 @@
 """
 SineKit Analysis Module
 
-A Python module for analyzing gene expression and methylation data using sine wave fitting.
+A Python module for analyzing gene methylated fraction and methylation date using
+a decaying sine wave model.
 This module provides tools to process and analyze genomic data, particularly focusing on
-periodic patterns in gene expression and methylation levels.
+periodic patterns in gene methylation rates.
 
 Key Features:
 -------------
-- Sine wave fitting for gene expression data
+- Sine wave fitting for gene methylation rate and methylated fraction data
 - Automated and user-defined quantile analysis
 - Support for both rate and methylation fraction analyses
 - SQLite database integration for result storage
@@ -30,20 +31,6 @@ Dependencies:
 - pickle: Object serialization
 - gc: Garbage collection for memory management
 
-Typical Usage:
--------------
->>> config_file = "analysis_config.yaml"
->>> sinekit_analysis(config_file)
-
-For custom quantile analysis:
->>> sinekit_analysis(config_file, user_quantile_fn="custom_quantiles.csv")
-
-Data Requirements:
-----------------
-- Gene expression/methylation measurements
-- Configuration file with analysis parameters
-- Optional: User-defined quantile assignments
-
 Output:
 -------
 - CSV files with analysis results
@@ -58,9 +45,9 @@ It assumes input data follows specific formats and provides comprehensive error 
 for data validity. Memory management is handled through strategic garbage collection
 during intensive computations.
 
-Author: [Your Name]
+Author: Zhuwei Xu
 Version: 1.0.0
-License: [License Type]
+Date: 25-02-03
 """
 
 import logging
@@ -171,19 +158,23 @@ def prepare_results_for_csv(result_dict: dict, analysis: str) -> pd.DataFrame:
             "Baseline (b0)"
         ]
     columns = []
+    label_columns = []
     if analysis == 'Rate':
-        columns = ['Experiment', 'Rep'] + da_columns
+        label_columns = ['Experiment', 'Rep'] 
+
     elif analysis == 'Frac':
-        columns = ['Experiment', 'Rep', 'Time'] + da_columns
+        label_columns = ['Experiment', 'Rep', 'Time']
     elif analysis == 'RateQuantile':
-        columns = ['Experiment', 'Rep', 'Quantile'] + da_columns
+        label_columns = ['Experiment', 'Rep', 'Quantile']
     elif analysis == 'FracQuantile':
-        columns = ['Experiment', 'Rep', 'Time', 'Quantile'] + da_columns
+        label_columns = ['Experiment', 'Rep', 'Time', 'Quantile']
     elif analysis == 'RateUserQuantile':
-        columns = ['GroupName', 'Experiment', 'Rep', 'Quantile'] + da_columns        
+        label_columns = ['GroupName', 'Experiment', 'Rep', 'Quantile']        
     elif analysis == 'FracUserQuantile':
-        columns = ['GroupName', 'Experiment', 'Rep', 'Time', 'Quantile'] + da_columns        
+        label_columns = ['GroupName', 'Experiment', 'Rep', 'Time', 'Quantile']  
+    columns = label_columns + da_columns              
     results_pd = pd.DataFrame(results_pd, columns=columns)
+    results_pd.sort_values(by=label_columns, inplace=True)
     return results_pd
 
 
@@ -280,19 +271,19 @@ def calc_adj_gene_with_quantile(
         xmin: int,
         xmax: int) -> pd.DataFrame:
     """
-    Calculates adjusted gene expression levels and assigns them to quantiles based on fitted parameters,
+    Calculates adjusted gene methylation levels and assigns them to quantiles based on fitted parameters,
     supporting both standard rate analysis and time-series fraction analysis.
     
     Parameters
     ----------
     gene_ind_pd : pd.DataFrame
-        Input DataFrame containing gene expression data.
+        Input DataFrame containing gene methylation rates/methylated fractions.
         Required columns for all analyses:
             - Experiment: Experiment identifiers
             - Rep: Replicate identifiers
             - Gene: Gene identifiers
             - Pos: Position values
-            - Value: Expression values
+            - Value: Methylation values
         Additional required column for 'Frac' analysis:
             - Time: Time point identifiers
     
@@ -321,12 +312,12 @@ def calc_adj_gene_with_quantile(
     Returns
     -------
     pd.DataFrame
-        A DataFrame containing adjusted gene expression levels and quantile assignments.
+        A DataFrame containing adjusted gene methylation levels and quantile assignments.
         For 'Rate' analysis, columns include:
             - Experiment: experiment identifier
             - Rep: replicate identifier
             - Gene: gene identifier
-            - Adj.Average: adjusted expression level
+            - Adj.Average: adjusted methylation level
             - R2: R-squared value for the adjustment
             - Quantile: assigned quantile (Q1, Q2, etc.)
         For 'Frac' analysis, includes all above columns plus:
@@ -377,7 +368,7 @@ def calc_adj_gene_with_quantile(
     elif analysis == 'Frac':
         for (exp_, rep, time_), tmp_pd in gene_ind_pd.groupby(by=['Experiment', 'Rep', 'Time'], sort=False):
             tmp_rate_pd = []
-            fit_params = fit_dict[(exp_, rep)]['fit_params']
+            fit_params = fit_dict[(exp_, rep, time_)]['fit_params']
             
             for gene, tmp_pd2 in tmp_pd.groupby(by='Gene', sort=False):
                 y = tmp_pd2['Value'].values
@@ -411,7 +402,7 @@ def sine_fit_gene_quantile(
     is_user: bool = False,
 ) -> tuple:
     """
-    Performs sine wave fitting analysis on gene expression data grouped by quantiles.
+    Performs sine wave fitting analysis on gene methylation data grouped by quantiles.
     
     Parameters
     ----------
@@ -468,7 +459,7 @@ def sine_fit_gene_quantile(
     
     Notes
     -----
-    The function processes gene expression data by:
+    The function processes gene methylation data by:
     1. Filtering data to specified position range
     2. Grouping genes by quantiles
     3. Calculating average values within each quantile
@@ -589,7 +580,7 @@ def sine_fit_gene_quantile(
                 by=['GroupName', 'Quantile'], sort=False):
                 gene_set = set(tmp_gene_pd['Gene'].values)
                 tmp_data_pd = gene_ind_pd.loc[gene_ind_pd['Gene'].isin(gene_set)]
-                for (exp_, rep), tmp_data_pd2 in tmp_data_pd.groupby(by=['Experiment', 'Rep'], sort=False):
+                for (exp_, rep, time_), tmp_data_pd2 in tmp_data_pd.groupby(by=['Experiment', 'Rep', 'Time'], sort=False):
                     tmp_data = np.zeros(xmax-xmin+1)
                     tmp_cov = np.zeros(xmax-xmin+1)
                     for p, v in zip(tmp_data_pd['Pos'], tmp_data_pd['Value']):
@@ -626,7 +617,7 @@ def sine_fit_gene_quantile(
 
 def sinekit_analysis(config: str, user_quantile_fn=None):
     """
-    Performs sine wave analysis on gene expression data with optional quantile-based grouping.
+    Performs sine wave analysis on gene methylation data with optional quantile-based grouping.
     
     Args:
         config (str): Path to configuration file containing analysis parameters
@@ -746,4 +737,92 @@ def sinekit_analysis(config: str, user_quantile_fn=None):
         with open(pkl_fn, 'wb') as filep:
             pickle.dump(gene_quantile_ave_dict, filep)        
     logger.info('Sine Wave analysis of average gene phasing in quantiles is successful.')
+
+    # Process average gene rates
+    try:
+        gene_raw_pd = pd.read_sql_query('select * from "gene_1010bp_average_fraction"', data_con)
+    except:
+        logger.error('Error loading gene average rate from gene_1010bp_average_fraction')
+        raise RuntimeError
+    # Fit sine wave to average gene methylated fractions
+    gene_average_pd, gene_average_dict = sinefit_gene_average(
+        gene_raw_pd, "Frac", xmin, xmax
+    )
+    logger.info('sine fit done')
+    # Save average gene rate results
+    csv_fn = os.path.join(fit_folder, f'{prefix}.Gene.AverageFraction.SineWave.result.csv')
+    pkl_fn = os.path.join(fit_folder, f'{prefix}.Gene.AverageFraction.SineWave.pkl')
+    gene_average_pd.to_csv(csv_fn, index=False)
+    gene_average_pd.to_sql('SineWave_Gene_AverageRate_Fit', data_con, index=False, if_exists='replace')
+    with open(pkl_fn, 'wb') as filep:
+        pickle.dump(gene_average_dict, filep)
+    logger.info('Sine Wave analysis of average methylated fraction of gene phasing is successful.')
+
+    # Process individual gene rates
+    try:
+        gene_ind_pd = pd.read_sql_query('select * from "gene_1010bp_individual_fraction"', data_con)
+    except:
+        logger.error('Error loading gene average rate from gene_1010bp_individual_fraction')
+        raise RuntimeError
+
+
+    # Handle quantile assignments (either calculated or user-provided)
+    if user_quantile_fn is None:
+        # Calculate quantiles based on data
+        gene_adj_pd = calc_adj_gene_with_quantile(
+            gene_ind_pd,
+            gene_average_dict,
+            num_quantile,
+            "Frac", xmin, xmax
+        )
+        csv_fn = os.path.join(csv_folder, f'{prefix}.Gene.Adjusted_Fraction.csv')
+        gene_adj_pd.to_csv(csv_fn, index=False)
+        gene_adj_pd.to_sql('SineWave_Gene_Ajusted_Fraction', data_con, index=False, if_exists='replace')
+    else:
+        # Use user-provided quantile assignments
+        gene_adj_pd = pd.read_csv(user_quantile_fn, index_col=False)
+        required_cols = {'GroupName', 'Gene', 'Quantile'}
+        missing_cols = required_cols - set(gene_adj_pd.columns)
+        if missing_cols:
+            logger.error('Manual Gene Quantile File missing required columns: %s', missing_cols)
+            raise RuntimeError(f'Missing required columns: {missing_cols}')
+        gene_adj_pd.to_sql('SineWave_Gene_Ajusted_Fraction_UserQuantile', data_con, index=False, if_exists='replace')
+
+    # Process quantile-specific analyses
+    if user_quantile_fn is None:
+        # Analysis with calculated quantiles
+        gene_quantile_ave_pd, gene_quantile_ave_fit_pd, gene_quantile_ave_dict = sine_fit_gene_quantile(
+            gene_ind_pd, gene_adj_pd, num_quantile, 
+            'Frac', xmin, xmax)
+        
+        # Save calculated quantile results
+        csv_fn = os.path.join(csv_folder, f'{prefix}.Gene.AverageFraction_1kb.Quantile.csv')
+        gene_quantile_ave_pd.to_csv(csv_fn, index=False)
+        gene_quantile_ave_pd.to_sql('SineWave_Gene_AverageFraction_1kb_Quantile', data_con, index=False, if_exists='replace')
+
+        csv_fn = os.path.join(fit_folder, f'{prefix}.Gene.AverageFraction.Quantile.SineWave.result.csv')
+        pkl_fn = os.path.join(fit_folder, f'{prefix}.Gene.AverageFraction.Quantile.SineWave.pkl')    
+        gene_quantile_ave_fit_pd.to_csv(csv_fn, index=False)
+        gene_quantile_ave_fit_pd.to_sql('SineWave_Gene_AverageFraction_Quantile_Fit', data_con, index=False, if_exists='replace')
+        with open(pkl_fn, 'wb') as filep:
+            pickle.dump(gene_quantile_ave_dict, filep)
+    else:
+        # Analysis with user-provided quantiles
+        gene_quantile_ave_pd, gene_quantile_ave_fit_pd, gene_quantile_ave_dict = sine_fit_gene_quantile(
+            gene_ind_pd, gene_adj_pd, num_quantile, 
+            'Frac', xmin, xmax, is_user=True)
+        
+        # Save user quantile results
+        csv_fn = os.path.join(csv_folder, f'{prefix}.Gene.AverageFraction_1kb.UserQuantile.csv')
+        gene_quantile_ave_pd.to_csv(csv_fn, index=False)
+        gene_quantile_ave_pd.to_sql('SineWave_Gene_AverageFraction_1kb_Quantile', data_con, index=False, if_exists='replace')
+
+        csv_fn = os.path.join(fit_folder, f'{prefix}.Gene.AverageFraction.UserQuantile.SineWave.result.csv')
+        pkl_fn = os.path.join(fit_folder, f'{prefix}.Gene.AverageFraction.UserQuantile.SineWave.pkl')    
+        gene_quantile_ave_fit_pd.to_csv(csv_fn, index=False)
+        gene_quantile_ave_fit_pd.to_sql('SineWave_Gene_AverageFraction_UserQuantile_Fit', data_con, index=False, if_exists='replace')
+        with open(pkl_fn, 'wb') as filep:
+            pickle.dump(gene_quantile_ave_dict, filep)        
+    logger.info('Sine Wave analysis of average methylated fractions of gene phasing in quantiles is successful.')
+
     data_con.close()

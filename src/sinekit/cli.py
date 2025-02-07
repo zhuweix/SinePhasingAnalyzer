@@ -4,10 +4,7 @@ from pathlib import Path
 from typing import Annotated, Optional
 import typer
 from sinekit.utility import setup_logging
-from sinekit.process_bw import process_bigwig
-from sinekit.calculate_rate import calculate_rate
-from sinekit.extract import extract_all
-from sinekit.phasing import sinekit_analysis
+
 
 
 setup_logging()
@@ -55,7 +52,7 @@ def load(
     """
     if not config_file.is_file():
         raise typer.BadParameter(f'{config_file} does not exist!')
-
+    from sinekit.process_bw import process_bigwig
     process_bigwig(config=config_file)
     logger.info('Bigwig files are successfully loaded.')    
 
@@ -88,7 +85,7 @@ def calc(
     """
     if not config_file.is_file():
         raise typer.BadParameter(f'{config_file} does not exist!')
-
+    from sinekit.calculate_rate import calculate_rate
     calculate_rate(config=config_file)
     logger.info('Methylation rates are successfully calculated.')    
 
@@ -112,6 +109,7 @@ def extract(
         and 'calc' steps of the pipeline.
     """   
     try:
+        from sinekit.extract import extract_all
         extract_all(config=config_file)
         logger.info('Processed data are extracted.')        
     except Exception as e:
@@ -135,7 +133,7 @@ def phase(
         resolve_path=True)] = None
 ) -> None:
     """
-    Perform sine wave phasing analysis on gene expression data.
+    Perform sine wave phasing analysis on gene methylation rate / methylated fraction data.
     
     Args:
         config_file: Path to TOML configuration file containing analysis parameters
@@ -146,7 +144,7 @@ def phase(
     - Gene: Gene identifier
     - Quantile: Quantile assignment
     """
-
+    from sinekit.phasing import sinekit_analysis
     try:
         if user_quantile_fn is None:
             sinekit_analysis(config=config_file)
@@ -155,6 +153,24 @@ def phase(
         logger.info('Phasing analysis is successful.')            
     except Exception as e:
         raise typer.BadParameter(f'Analysis failed: {str(e)}')
+
+@app.command(help='[Experimental] Plot figures for analysis')
+def plot(
+    config_file: Annotated[Path, typer.Argument(
+        help="Path to configuration file in TOML format",
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        resolve_path=True)],
+    use_userquantile: Annotated[bool, typer.Option(
+        help="Whether to plot user-defined quantile plots.\nMust run the phasing analysis with user-defined gene quantiles before.")]=False
+) -> None:
+    from sinekit.plot_figure import plot_figures
+    plot_figures(
+        config_file,
+        use_userquantile
+    )
+    logger.info('All the figures are successfully plotted.')
 
 @app.command(help='Run complete methylation analysis pipeline')
 def full(
@@ -201,6 +217,11 @@ def full(
         - Phasing analysis results
         - Log files documenting the process
     """
+    from sinekit.process_bw import process_bigwig
+    from sinekit.calculate_rate import calculate_rate
+    from sinekit.extract import extract_all
+    from sinekit.phasing import sinekit_analysis
+    from sinekit.plot_figure import plot_figures    
     process_bigwig(config=config_file)
     logger.info('Bigwig files are successfully loaded.')
     calculate_rate(config=config_file)
@@ -209,6 +230,7 @@ def full(
     logger.info('Processed data are extracted.')
     sinekit_analysis(config=config_file)
     logger.info('Phasing analysis is successful.')
-    
+    plot_figures(config_file)
+    logger.info('All the figures are successfully plotted.')    
 if __name__ == "__main__":
     app()

@@ -1,7 +1,5 @@
-title: Sine Phasing Analyzer
-description: Analyze the phasing data using a decaying sine wave model.
 theme: jekyll-theme-minimal
-remote_theme: pages-themes/minimal@v0.2.0
-plugins:
-  - jekyll-remote-theme
-  - jekyll-seo-tag
+title: Sine Phasing Analyzer
+description: A Python tool for phasing analysis using decaying sine model
+show_downloads: true
+google_analytics:

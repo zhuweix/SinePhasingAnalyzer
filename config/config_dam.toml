@@ -1,16 +1,16 @@
 [data]
 # Folder containing bigwig files
-bigwig_folder = "../test/bigwig"
+bigwig_folder = "../test/bigwig/Dam"
 # Sample sheet containing the metadata of the bigwig files
-sample_sheet = "../config/test_samplesheet.csv"
+sample_sheet = "../config/Dam_samplesheet.csv"
 
 [output]
 # prefix of the output files
 # SQL database file will be named as <prefix>.db
 # CSV files will be named as <prefix>.<table name>.csv
-prefix = "example_test_DpnI"
+prefix = "Live_Dam"
 # Folder to store the output files
-output_folder = "../test/example_output"
+output_folder = "../test/Dam"
 
 [parameter]
 # Normalization method
@@ -49,18 +49,15 @@ mnase_table = "../resource/NAR_2016.sacCer3.MNase.csv"
 
 # Plotting parameters
 [plot_parameter]
-# MNase track
-mnase_file = "../resource/NAR_2016.sacCer3.MNase.csv"
 
 # Time course figures
 timecourse_xlabel = "Time after SM addition (min)"
 timecourse_frac_ylabel = "Fraction Methylated\n(Cut by DpnI)"
-timecourse_rate_ylabel = "Methylation Rate"
 timecourse_xlim = [0, 240]
 
 # Gene Phasing figures
 phasing_xlabel = "Relative to +1 Nucleosome (bp)"
 phasing_xlim = [-1000, 1000]
 phasing_ylabel = "Relative Methylation Rate"
-phasing_ylim = [0, 3]
-phasing_ylim_sinewave = [0, 3]
+phasing_ylim = [0, 2]
+phasing_ylim_sinewave = [0, 1.75]

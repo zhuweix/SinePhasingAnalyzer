@@ -38,14 +38,15 @@ Notes:
     - Results are saved in both SQLite database and CSV format
 
 Author: Zhuwei Xu
-
 Version: 1.0.0
+Date: 25-02-03
 """
 
 import logging
 import sqlite3
 import os
 import gc
+import gzip
 from sinekit.utility import (calc_methylation_rate, 
     load_sample_sheet, load_config_file, get_chrom_sizes)
 import pandas as pd
@@ -127,7 +128,7 @@ def extract_gene_percentile_timecourse(
     gene_pd: pd.DataFrame
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Extracts and analyzes gene expression time course data, calculating statistics 
+    Extracts and analyzes gene methylaed fraction time course data, calculating statistics 
     for both gene bodies and NDR (Nucleosome Depleted Regions).
 
     This function processes genomic data for each experiment and replicate, 
@@ -327,7 +328,8 @@ def extract_feature_raw_rate(data_con: sqlite3.Connection,
     
     This function processes genomic data to extract relative rates for various features
     including NDRs (Nucleosome Depleted Regions), gene bodies, tRNA genes, ARS
-    (Autonomously Replicating Sequences), telomeres, and Ty elements.
+    (Autonomously Replicating Sequences), telomeres, and Ty elements. Raw (unnormalized)
+    mtDNA rates are also extracted.
     
     Parameters
     ----------
@@ -356,7 +358,7 @@ def extract_feature_raw_rate(data_con: sqlite3.Connection,
         5. Telomeres
         6. Ty elements
         Each DataFrame contains columns: Experiment, Rep, Relative Rate
-    
+        7. mtDNA elements: Experiment, Rep, Raw Rate
     Notes
     -----
     - The function processes each chromosome separately to manage memory usage
@@ -501,7 +503,16 @@ def extract_feature_raw_rate(data_con: sqlite3.Connection,
 
     logger.info('ARS, Tel and Ty data are extracted')
 
-    return ndr_pd, genebody_pd, trna_gene_pd, ars_raw_pd, tel_raw_pd, ty_raw_pd
+    mito_raw_pd = []
+    for (exp_, rep), _ in sample_pd.groupby(by=['experiment', 'rep'], sort=False):
+        tmp_pd = pd.read_sql_query(f'select Chrom, Rate from "{exp_}_{rep}_Rate" where Chrom = "Mito"', data_con)
+        tmp_values = tmp_pd['Rate'].values
+        tmp_values = tmp_values[~np.isnan(tmp_values)]
+        tmp_pd2 = pd.DataFrame({'Experiment': exp_, 'Rep': rep, 'Raw Rate': tmp_values})
+        mito_raw_pd.append(tmp_pd2)
+    mito_raw_pd = pd.concat(mito_raw_pd, ignore_index=True)
+    logger.info('mtDNA data are extracted')    
+    return ndr_pd, genebody_pd, trna_gene_pd, ars_raw_pd, tel_raw_pd, ty_raw_pd, mito_raw_pd
 
 def extract_tRNA_rate(data_con: sqlite3.Connection,
     sample_pd: pd.DataFrame, 
@@ -544,16 +555,23 @@ def extract_tRNA_rate(data_con: sqlite3.Connection,
     percentile_list = [5, 15, 25, 50, 75, 85, 95]
     feat_list = ['TFIIIB', 'TFIIIC', 'Intron']
     percentile_pd = []
-    chrom_size_dict = get_chrom_sizes(data_con)    
+    chrom_size_dict = get_chrom_sizes(data_con)
+
+    normalization_pd = pd.read_sql_query('select * from "Sample_Median_Rate_combine"', data_con)
+    norm_rate_dict= {}
+    for _, row in normalization_pd.iterrows():
+        exp_ = row['Experiment']
+        rep = row['Rep']
+        rate = row["Rate"]
+        norm_rate_dict[(exp_, rep)] = rate
     
     for (exp_, rep), tmp_sample_pd in sample_pd.groupby(by=['experiment', 'rep'], sort=False):
         time_list = tmp_sample_pd["time"].values
         tmp_pd = pd.read_sql_query(f'select * from "{exp_}_{rep}_combine"', data_con)
-        
+
         for feat in feat_list:
             tmp_dict = {}
-            tmp_tRNA_pd = tRNA_pd.loc[tRNA_pd['Type'] == feat]
-            
+            tmp_tRNA_pd = tRNA_pd.loc[tRNA_pd['Type'] == feat]            
             for chrom, tmp_pd2 in tmp_tRNA_pd.groupby('Chrom', sort=False):
                 tmp_pd3 = tmp_pd.loc[tmp_pd['Chrom'] == chrom]
                 pos = tmp_pd3['Pos'].values
@@ -585,11 +603,15 @@ def extract_tRNA_rate(data_con: sqlite3.Connection,
         columns=['Experiment', 'Rep', 'Feature', 'Time'] + [str(x) for x in percentile_list]
     )
 
+
     rate_pd = []
     for feat in feat_list:
         tmp_pd = percentile_pd.loc[percentile_pd['Feature'] == feat]
         tmp_raw = []
+        tmp_norm_rates = []
         for (exp_, rep), tmp_pd2 in tmp_pd.groupby(by=['Experiment', 'Rep'], sort=False):
+            norm_rate = norm_rate_dict[(exp_, rep)]
+            tmp_norm_rates.append(norm_rate)
             tmp = [exp_, rep]
             tmp.extend(list(tmp_pd2['50'].values))
             tmp_raw.append(tmp)
@@ -597,10 +619,12 @@ def extract_tRNA_rate(data_con: sqlite3.Connection,
         tmp_rate = calc_methylation_rate(tmp_raw, np.array(time_list))
         tmp_rate.rename(columns={'Chrom': 'Experiment', 'Pos': 'Rep'}, inplace=True)
         tmp_rate['Feature'] = feat
+        tmp_norm_rates = np.array(tmp_norm_rates)
+        tmp_rate['Relative Rate'] = tmp_rate['Rate'] / tmp_norm_rates
         rate_pd.append(tmp_rate)
     rate_pd = pd.concat(rate_pd, ignore_index=True)
     cols = list(rate_pd.columns)
-    rate_pd = rate_pd[cols[-1:] + cols[:-1]]
+    rate_pd = rate_pd[cols[-2:] + cols[:-2]]
     
     return percentile_pd, rate_pd
 
@@ -1117,13 +1141,13 @@ def extract_all(config: str):
 
     raw_pd_list = extract_feature_raw_rate(
         data_con, sample_pd, gene_pd, trna_pd, other_pd)
-    feat_list = ['NDR', 'Genebody', 'tRNA', 'ARS', 'TEL', 'Ty']
+    feat_list = ['NDR', 'Genebody', 'tRNA', 'ARS', 'TEL', 'Ty', 'mtDNA']
     for tmp_pd, feat in zip(raw_pd_list, feat_list):
         tmp_pd.to_sql(f'Raw_{feat}_Rate', data_con, index=False, if_exists='replace')
         csv_fn = os.path.join(csv_folder, f'{prefix}.{feat}.raw_rate.csv.gz')
-        tmp_pd.to_csv(csv_fn, index=False, 
-            compression={'method': 'gzip', 'compresslevel': 9}, encoding='utf-8')          
-    logger.info('Raw data for NDR, Genebody, tRNA, ARS, TEL, Ty are extracted')
+        with gzip.open(csv_fn, 'wt', compresslevel=9) as filep:
+            tmp_pd.to_csv(filep, index=False, encoding='utf-8')          
+    logger.info('Raw data for NDR, Genebody, tRNA, ARS, TEL, Ty and mtDNA are extracted')
     percentile_pd, rate_pd = extract_tRNA_rate(
         data_con, sample_pd, trna_pd
     )
@@ -1155,8 +1179,8 @@ def extract_all(config: str):
 
     gene_rate_ind_pd.to_sql('gene_1010bp_individual_rate', data_con, index=False, if_exists='replace')    
     csv_fn = os.path.join(csv_folder, f'{prefix}.gene.1kb_individual_rate.raw.csv.gz')
-    gene_rate_ind_pd.to_csv(csv_fn, index=False,
-            compression={'method': 'gzip', 'compresslevel': 9}, encoding='utf-8')
+    with gzip.open(csv_fn, 'wt', compresslevel=9) as filep:
+        gene_rate_ind_pd.to_csv(filep, index=False, encoding='utf-8')
     
     gene_rate_smooth_pd.to_sql('gene_1000bp_smooth_rate', data_con, index=False, if_exists='replace')    
     csv_fn = os.path.join(csv_folder, f'{prefix}.gene.1kb_average_rate.smooth.csv')
@@ -1171,7 +1195,7 @@ def extract_all(config: str):
 
     gene_ind_pd.to_sql('gene_1010bp_individual_fraction', data_con, index=False, if_exists='replace')    
     csv_fn = os.path.join(csv_folder, f'{prefix}.gene.1kb_individual_fraction.raw.csv.gz')
-    gene_ind_pd.to_csv(csv_fn, index=False,
-            compression={'method': 'gzip', 'compresslevel': 9}, encoding='utf-8')  
+    with gzip.open(csv_fn, 'wt', compresslevel=9) as filep:
+        gene_ind_pd.to_csv(filep, index=False, encoding='utf-8')    
     logger.info('Average Methylated Fractions for gene +/- 1 kb are extracted')    
     data_con.close()

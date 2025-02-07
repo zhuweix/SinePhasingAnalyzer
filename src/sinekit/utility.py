@@ -17,7 +17,9 @@ The module requires the following dependencies:
     - statsmodels
     - scipy
     - tomllib (Python 3.11+)
-
+Author: Zhuwei Xu
+Version: 1.0.0
+Date: 25-02-03
 """
 
 import logging
@@ -484,7 +486,7 @@ def calculate_adj_gene_level(y: np.ndarray, xpos: np.ndarray, fit_params: np.nda
     Parameters
     ----------
     y : numpy.ndarray
-        Observed values for the gene expression or methylation levels
+        Observed values for the gene methylation rates / methylated fractions
     xpos : numpy.ndarray
         Position values corresponding to the observations
     fit_params : numpy.ndarray
@@ -518,7 +520,10 @@ def calculate_adj_gene_level(y: np.ndarray, xpos: np.ndarray, fit_params: np.nda
     adj_rate = np.nanmean(y - y_fit)
     sst = np.sum((y - np.mean(y))**2)
     ssr = np.sum((y-y_fit-adj_rate)**2)
-    r2 = 1 - ssr/sst
+    if np.abs(sst) < np.finfo(float).eps:
+        r2 = np.nan
+    else:
+        r2 = 1 - ssr/sst
     return adj_rate, r2
 
 

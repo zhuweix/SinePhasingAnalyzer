@@ -1,0 +1,13 @@
+experiment,rep,time,filename
+WT,Rep1,0,example.rep1.0min.bw
+WT,Rep1,30,example.rep1.30min.bw
+WT,Rep1,60,example.rep1.60min.bw
+WT,Rep1,120,example.rep1.120min.bw
+WT,Rep1,180,example.rep1.180min.bw
+WT,Rep1,240,example.rep1.240min.bw
+WT,Rep2,0,example.rep2.0min.bw
+WT,Rep2,30,example.rep2.30min.bw
+WT,Rep2,60,example.rep2.60min.bw
+WT,Rep2,120,example.rep2.120min.bw
+WT,Rep2,180,example.rep2.180min.bw
+WT,Rep2,240,example.rep2.240min.bw

@@ -18,6 +18,9 @@ Dependencies:
     - pyBigWig: BigWig file processing
     - sqlite3: Database operations
     - numpy: Numerical operations
+Author: Zhuwei Xu
+Version: 1.0.0
+Date: 25-02-03    
 """
 
 import logging

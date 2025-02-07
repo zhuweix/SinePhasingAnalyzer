@@ -1,0 +1,61 @@
+experiment,rep,time,filename
+WT,Rep1,0,241221_808H_5_1kb.Filter_0min.bw
+WT,Rep1,30,241221_808H_5_1kb.Filter_30min.bw
+WT,Rep1,60,241221_808H_5_1kb.Filter_60min.bw
+WT,Rep1,120,241221_808H_5_1kb.Filter_120min.bw
+WT,Rep1,180,241221_808H_5_1kb.Filter_180min.bw
+WT,Rep1,240,241221_808H_5_1kb.Filter_240min.bw
+WT,Rep2,0,241221_808P_1_1kb.Filter_0min.bw
+WT,Rep2,30,241221_808P_1_1kb.Filter_30min.bw
+WT,Rep2,60,241221_808P_1_1kb.Filter_60min.bw
+WT,Rep2,120,241221_808P_1_1kb.Filter_120min.bw
+WT,Rep2,180,241221_808P_1_1kb.Filter_180min.bw
+WT,Rep2,240,241221_808P_1_1kb.Filter_240min.bw
+rsc8,Rep1,0,241221_812H_2_1kb.Filter_0min.bw
+rsc8,Rep1,30,241221_812H_2_1kb.Filter_30min.bw
+rsc8,Rep1,60,241221_812H_2_1kb.Filter_60min.bw
+rsc8,Rep1,120,241221_812H_2_1kb.Filter_120min.bw
+rsc8,Rep1,180,241221_812H_2_1kb.Filter_180min.bw
+rsc8,Rep1,240,241221_812H_2_1kb.Filter_240min.bw
+rsc8,Rep2,0,241221_812P_1_1kb.Filter_0min.bw
+rsc8,Rep2,30,241221_812P_1_1kb.Filter_30min.bw
+rsc8,Rep2,60,241221_812P_1_1kb.Filter_60min.bw
+rsc8,Rep2,120,241221_812P_1_1kb.Filter_120min.bw
+rsc8,Rep2,180,241221_812P_1_1kb.Filter_180min.bw
+rsc8,Rep2,240,241221_812P_1_1kb.Filter_240min.bw
+isw1,Rep1,0,241221_820H_1_1kb.Filter_0min.bw
+isw1,Rep1,30,241221_820H_1_1kb.Filter_30min.bw
+isw1,Rep1,60,241221_820H_1_1kb.Filter_60min.bw
+isw1,Rep1,120,241221_820H_1_1kb.Filter_120min.bw
+isw1,Rep1,180,241221_820H_1_1kb.Filter_180min.bw
+isw1,Rep1,240,241221_820H_1_1kb.Filter_240min.bw
+isw1,Rep2,0,241221_820P_1_1kb.Filter_0min.bw
+isw1,Rep2,30,241221_820P_1_1kb.Filter_30min.bw
+isw1,Rep2,60,241221_820P_1_1kb.Filter_60min.bw
+isw1,Rep2,120,241221_820P_1_1kb.Filter_120min.bw
+isw1,Rep2,180,241221_820P_1_1kb.Filter_180min.bw
+isw1,Rep2,240,241221_820P_1_1kb.Filter_240min.bw
+chd1,Rep1,0,241221_821H_1_1kb.Filter_0min.bw
+chd1,Rep1,30,241221_821H_1_1kb.Filter_30min.bw
+chd1,Rep1,60,241221_821H_1_1kb.Filter_60min.bw
+chd1,Rep1,120,241221_821H_1_1kb.Filter_120min.bw
+chd1,Rep1,180,241221_821H_1_1kb.Filter_180min.bw
+chd1,Rep1,240,241221_821H_1_1kb.Filter_240min.bw
+chd1,Rep2,0,241221_821P_1_1kb.Filter_0min.bw
+chd1,Rep2,30,241221_821P_1_1kb.Filter_30min.bw
+chd1,Rep2,60,241221_821P_1_1kb.Filter_60min.bw
+chd1,Rep2,120,241221_821P_1_1kb.Filter_120min.bw
+chd1,Rep2,180,241221_821P_1_1kb.Filter_180min.bw
+chd1,Rep2,240,241221_821P_1_1kb.Filter_240min.bw
+isw1 chd1,Rep1,0,241221_823H_1_1kb.Filter_0min.bw
+isw1 chd1,Rep1,30,241221_823H_1_1kb.Filter_30min.bw
+isw1 chd1,Rep1,60,241221_823H_1_1kb.Filter_60min.bw
+isw1 chd1,Rep1,120,241221_823H_1_1kb.Filter_120min.bw
+isw1 chd1,Rep1,180,241221_823H_1_1kb.Filter_180min.bw
+isw1 chd1,Rep1,240,241221_823H_1_1kb.Filter_240min.bw
+isw1 chd1,Rep2,0,241221_823P_1_1kb.Filter_0min.bw
+isw1 chd1,Rep2,30,241221_823P_1_1kb.Filter_30min.bw
+isw1 chd1,Rep2,60,241221_823P_1_1kb.Filter_60min.bw
+isw1 chd1,Rep2,120,241221_823P_1_1kb.Filter_120min.bw
+isw1 chd1,Rep2,180,241221_823P_1_1kb.Filter_180min.bw
+isw1 chd1,Rep2,240,241221_823P_1_1kb.Filter_240min.bw

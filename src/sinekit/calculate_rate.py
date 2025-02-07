@@ -42,11 +42,6 @@ Required tables:
 - Sample_Median_Rate_combine: Calculated median rates
 - {experiment}_{replicate}_rate: Final normalized rates
 
-Example Usage
-------------
->>> config_path = "path/to/config.toml"
->>> calculate_rate(config_path)
-
 Notes
 -----
 - Input data should be properly formatted in SQLite database
