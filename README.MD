@@ -66,9 +66,6 @@ sinekit plot CONFIG.TOML [OPTIONAL --use-userquantile]
 Boolean flag `--use-userquantile` specifies whether to use user-defined gene quantiles for plotting.
 Default is --no-use-userquantile which uses the quantiles calculated during the phasing analysis.
 
-## Documentation
-
-For detailed documentation, visit our [GitHub Pages](https://zhuweix.github.io/SinePhasingAnalyzer).
 
 ## License
 
