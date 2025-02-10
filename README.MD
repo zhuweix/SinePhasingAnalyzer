@@ -8,6 +8,8 @@ Sine Phasing Analyzer is designed to process genomic data and perform methylatio
 
 ## Installation
 
+This tool requires python >= 3.11.
+
 ```bash
 git clone https://github.com/zhuweix/SinePhasingAnalyzer.git
 cd SinePhasingAnalyzer
