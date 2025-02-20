@@ -86,5 +86,10 @@ Boolean flag `--use-userquantile` specifies whether to use user-defined gene qua
 Default is --no-use-userquantile which uses the quantiles calculated during the phasing analysis.
 
 
+
 ## CITATION
 TBD
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE]
