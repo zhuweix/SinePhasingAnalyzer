@@ -8,6 +8,8 @@ Sine Phasing Analyzer is designed to process genomic data and perform methylatio
 
 ## Installation
 
+This package requires Python 3.11 or later. Conda or Mamba is recommended for package management.
+
 ```bash
 git clone https://github.com/zhuweix/SinePhasingAnalyzer.git
 cd SinePhasingAnalyzer
@@ -19,9 +21,26 @@ pip install .
 Prepare the TOML configuration file and Sample Sheet CSV file. 
 The example TOML file and Sample Sheet CSV file can be found in the `config` folder.
 
+
 Run complete analysis pipeline:
 ```bash
 sinekit full CONFIG.TOML
+```
+### Important Parameters in the TOML Configuration File
+```toml
+[data]
+# Folder containing bigwig files
+bigwig_folder = [PATH TO BIGWIG FOLDER]
+# Sample sheet containing the metadata of the bigwig files
+sample_sheet = [PATH TO SAMPLE SHEET CSV]
+
+[output]
+# prefix of the output files
+# SQL database file will be named as <prefix>.db
+# CSV files will be named as <prefix>.<table name>.csv
+prefix = [PREFIX OF OUTPUT FILES]
+# Folder to store the output files
+output_folder = [PATH TO OUTPUT FOLDER]
 ```
 
 
@@ -67,6 +86,5 @@ Boolean flag `--use-userquantile` specifies whether to use user-defined gene qua
 Default is --no-use-userquantile which uses the quantiles calculated during the phasing analysis.
 
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## CITATION
+TBD

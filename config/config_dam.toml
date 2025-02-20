@@ -1,8 +1,8 @@
 [data]
 # Folder containing bigwig files
-bigwig_folder = "../test/bigwig/Dam"
+bigwig_folder = "test/bigwig/Dam"
 # Sample sheet containing the metadata of the bigwig files
-sample_sheet = "../config/Dam_samplesheet.csv"
+sample_sheet = "config/Dam_samplesheet.csv"
 
 [output]
 # prefix of the output files
@@ -10,7 +10,7 @@ sample_sheet = "../config/Dam_samplesheet.csv"
 # CSV files will be named as <prefix>.<table name>.csv
 prefix = "Live_Dam"
 # Folder to store the output files
-output_folder = "../test/Dam"
+output_folder = "test/Dam"
 
 [parameter]
 # Normalization method
@@ -27,25 +27,25 @@ xmax = 1000
 
 [resource]
 # Gene annotation file containing +1 dyads and NDR locations for S. cerevisiae genes
-gene_table = "../resource/sacCer3.gene.plus1.csv.gz"
+gene_table = "resource/sacCer3.gene.plus1.csv.gz"
 
 # tRNA element annotation file for S. cerevisiae
 # Format: CSV containing tRNA gene locations and metadata
-trna_table = "../resource/sacCer3.tRNA.element.csv"
+trna_table = "resource/sacCer3.tRNA.element.csv"
 
 # Additional genomic feature annotations
 # Format: CSV containing locations of other genomic elements
-other_table = "../resource/sacCer3.OtherFeature.csv"
+other_table = "resource/sacCer3.OtherFeature.csv"
 
 # RNA-seq data from GSE110413 study
 # Format: gzipped CSV containing RNA-seq measurements
 # Source: GEO accession GSE110413
-rnaseq_table = "../resource/GSE110413_SM_25min_rnaseq.csv.gz"
+rnaseq_table = "resource/GSE110413_SM_25min_rnaseq.csv.gz"
 
 # MNase-seq data for nucleosome positioning
 # Format: CSV containing MNase-seq data from NAR 2016 study
 # Source: Ocampo J, et al. Nucleic Acids Research. 2016
-mnase_table = "../resource/NAR_2016.sacCer3.MNase.csv"
+mnase_table = "resource/NAR_2016.sacCer3.MNase.csv"
 
 # Plotting parameters
 [plot_parameter]

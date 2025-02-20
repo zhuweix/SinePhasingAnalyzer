@@ -352,7 +352,8 @@ def calc_adj_gene_with_quantile(
         for (exp_, rep), tmp_pd in gene_ind_pd.groupby(by=['Experiment', 'Rep'], sort=False):
             tmp_rate_pd = []
             fit_params = fit_dict[(exp_, rep)]['fit_params']
-            
+            if np.any(np.isnan(fit_params)):
+                continue            
             for gene, tmp_pd2 in tmp_pd.groupby(by='Gene', sort=False):
                 y = tmp_pd2['Value'].values
                 xpos = tmp_pd2['Pos'].values
@@ -373,7 +374,8 @@ def calc_adj_gene_with_quantile(
         for (exp_, rep, time_), tmp_pd in gene_ind_pd.groupby(by=['Experiment', 'Rep', 'Time'], sort=False):
             tmp_rate_pd = []
             fit_params = fit_dict[(exp_, rep, time_)]['fit_params']
-            
+            if np.any(np.isnan(fit_params)):
+                continue
             for gene, tmp_pd2 in tmp_pd.groupby(by='Gene', sort=False):
                 y = tmp_pd2['Value'].values
                 xpos = tmp_pd2['Pos'].values

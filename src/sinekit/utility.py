@@ -431,7 +431,26 @@ def calc_sine_fit(y: np.ndarray, xpos: np.ndarray) -> dict:
     guess_x_0 = -np.pi/2
     guess_b = np.mean(y)
     initial_guess = [max_a, 1/160, guess_w_0, guess_x_0, guess_b, 0]   
-    popt, pcov = curve_fit(fit_function, xpos, y, p0=initial_guess) 
+    try:
+        popt, pcov = curve_fit(fit_function, xpos, y, p0=initial_guess)
+    except (RuntimeError, ValueError) as e:
+        print(f"Fitting error: {type(e).__name__}: {str(e)}")
+        result_dict = {
+            'Adj.R2': np.nan,
+            'Spacing': np.nan,
+            'Error_spacing': np.nan,
+            'Adj.Mean': np.nan,
+            'Amplitude': np.nan,
+            'Error_Amp': np.nan,
+            'Slope': np.nan,
+            'Error_Slope': np.nan,
+            'Decay': np.nan,
+            'b0': np.nan,
+            'theta0': np.nan,
+            'fit_params': np.array([np.nan] * 6),
+            'fit_errors': np.array([np.nan] * 6)
+        }        
+        return result_dict
     y_fit = fit_function(xpos, *popt)    
     # Extract parameters
     _, l_fit, w_0_fit, theta0_fit, _, _ = popt
@@ -517,6 +536,8 @@ def calculate_adj_gene_level(y: np.ndarray, xpos: np.ndarray, fit_params: np.nda
     def fit_f(x):
         return fit_function(x, *popt)
     y_fit = fit_f(xpos)
+    if not np.any(~np.isnan(y-y_fit)):
+        return np.nan, np.nan
     adj_rate = np.nanmean(y - y_fit)
     sst = np.sum((y - np.mean(y))**2)
     ssr = np.sum((y-y_fit-adj_rate)**2)

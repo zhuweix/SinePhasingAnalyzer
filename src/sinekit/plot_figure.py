@@ -270,6 +270,8 @@ def plot_sinewave_rate_quantile(
                 by=['Experiment', "Rep", "Quantile"], sort=False):
             figure_name = f'{figure_prefix}.SineWaveQuantile.{exp_}.{rep}.{q}.png'
             popt = fit_result_dict[(exp_, rep, q)]['fit_params']
+            if np.any(np.isnan(popt)):
+                continue
             xpos = tmp_rate_pd['Pos'].values
             x_fit = np.arange(-50, 1001)
             y_fit = fit_function(x_fit, *popt)        
@@ -300,6 +302,8 @@ def plot_sinewave_rate_quantile(
                 by=['GroupName', 'Experiment', "Rep", "Quantile"], sort=False):
             figure_name = f'{figure_prefix}.Rate.SineWaveUserQuantile.{name}.{exp_}.{rep}.{name}.{q}.png'
             popt = fit_result_dict[(name, exp_, rep, q)]['fit_params']
+            if np.any(np.isnan(popt)):
+                continue            
             xpos = tmp_rate_pd['Pos'].values
             x_fit = np.arange(-50, 1001)
             y_fit = fit_function(x_fit, *popt)        
@@ -344,6 +348,8 @@ def plot_sinewave_fraction(
     for (exp_, rep, time_), tmp_rate_pd in phase_pd.groupby(by=['Experiment', 'Time', "Rep"], sort=False):
         figure_name = f'{figure_prefix}.MethylatedFraction.SineWave.{exp_}.{time_}.{rep}.png'
         popt = fit_result_dict[(exp_, time_, rep)]['fit_params']
+        if np.any(np.isnan(popt)):
+            continue        
         xpos = tmp_rate_pd['Pos'].values
         x_fit = np.arange(-50, 1001)
         y_fit = fit_function(x_fit, *popt)        
@@ -390,6 +396,8 @@ def plot_sinewave_fraction_qiuantile(
         for (exp_, rep, time_, q), tmp_rate_pd in phase_pd.groupby(by=['Experiment', 'Time', "Rep", "Quantile"], sort=False):
             figure_name = f'{figure_prefix}.MethylatedFraction.SineWaveQuantile.{exp_}.{time_}.{rep}.{q}.png'
             popt = fit_result_dict[(exp_, time_, rep, q)]['fit_params']
+            if np.any(np.isnan(popt)):
+                continue            
             xpos = tmp_rate_pd['Pos'].values
             x_fit = np.arange(-50, 1001)
             y_fit = fit_function(x_fit, *popt)        
@@ -419,6 +427,8 @@ def plot_sinewave_fraction_qiuantile(
         for (name, exp_, rep, time_, q), tmp_rate_pd in phase_pd.groupby(by=['GroupName', 'Experiment', 'Time', "Rep", "Quantile"], sort=False):
             figure_name = f'{figure_prefix}.MethylatedFraction.UserSineWaveQuantile.{name}.{exp_}.{time_}.{rep}.{q}.png'
             popt = fit_result_dict[(name, exp_, time_, rep, q)]['fit_params']
+            if np.any(np.isnan(popt)):
+                continue            
             xpos = tmp_rate_pd['Pos'].values
             x_fit = np.arange(-50, 1001)
             y_fit = fit_function(x_fit, *popt)        
