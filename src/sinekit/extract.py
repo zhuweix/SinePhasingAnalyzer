@@ -937,6 +937,49 @@ def calc_smooth_pd(raw_pd: pd.DataFrame, window: int=21) -> pd.DataFrame:
     smooth_pd = pd.concat(smooth_pd, ignore_index=True)
     return smooth_pd
 
+def calc_smooth_fraction_pd(raw_pd: pd.DataFrame, window: int=21) -> pd.DataFrame:
+    """
+    Calculate smoothed values using sliding window convolution.
+
+    Parameters
+    ----------
+    raw_pd : pd.DataFrame
+        Input data with columns:
+        - Experiment: str, experiment identifier
+        - Rep: str/int, replicate number
+        - Time: int 
+        - Pos: int, position
+        - Value: float, measurement value
+    window : int, default=21
+        Size of smoothing window
+    
+    Returns
+    -------
+    pd.DataFrame
+        Smoothed data with columns:
+        - Experiment: str, experiment identifier
+        - Rep: str/int, replicate number 
+        - Time: int
+        - Pos: int, position
+        - SmoothedValue: float, smoothed measurement value
+    """
+    flank = 1010
+    smooth_pd = []
+    for (exp_, rep, time_), tmp_pd in raw_pd.groupby(by=['Experiment', 'Rep', "Time"], sort=False):
+        tmp = np.empty(2 *flank + 1)
+        tmp[:] = np.nan
+        pos = tmp_pd['Pos'].values
+        value = tmp_pd['Value'].values
+        tmp[pos+flank] = value
+        inval = np.isnan(tmp)
+        tmp[inval] = np.interp(np.where(inval)[0], np.where(~inval)[0], tmp[~inval])
+        sm = np.convolve(tmp, np.ones(window)/window, 'valid')
+        xpos = np.arange(-flank+window//2, -flank+window//2+len(sm))
+        sm_pd = pd.DataFrame({'Experiment': exp_, 'Rep': rep, "Time": time_,
+                              'Pos': xpos, 'SmoothedValue': sm})
+        smooth_pd.append(sm_pd)
+    smooth_pd = pd.concat(smooth_pd, ignore_index=True)
+    return smooth_pd
 
 def extract_gene_fraction(
     data_con: sqlite3.Connection,
@@ -1192,6 +1235,12 @@ def extract_all(config: str):
     gene_fraction_pd.to_sql('gene_1010bp_average_fraction', data_con, index=False, if_exists='replace')    
     csv_fn = os.path.join(csv_folder, f'{prefix}.gene.1kb_average_fraction.raw.csv')
     gene_fraction_pd.to_csv(csv_fn, index=False)
+    
+    gene_fraction_smooth_pd = calc_smooth_fraction_pd(gene_fraction_pd)
+    gene_fraction_smooth_pd.to_sql('gene_1000bp_smooth_fraction', data_con, index=False, if_exists='replace')
+    csv_fn = os.path.join(csv_folder, f'{prefix}.gene.1kb_average_fraction.smooth.csv')
+    gene_fraction_smooth_pd.to_csv(csv_fn, index=False)    
+    
 
     gene_ind_pd.to_sql('gene_1010bp_individual_fraction', data_con, index=False, if_exists='replace')    
     csv_fn = os.path.join(csv_folder, f'{prefix}.gene.1kb_individual_fraction.raw.csv.gz')

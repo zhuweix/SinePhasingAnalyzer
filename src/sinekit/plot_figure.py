@@ -183,6 +183,44 @@ def plot_phasing_rate_with_mnase(
     gc.collect()
     logger.info('Phasing plots of smoothed gene methylation rates are plotted.')
 
+def plot_phasing_frac_with_mnase(
+    figure_prefix: str,
+    phase_fn: str,
+    mnase_fn: str,
+    xlabel: str,
+    ylabel: str,
+    xlim: list,
+    ) -> None:
+    mnase_pd = pd.read_csv(mnase_fn, index_col=False)
+    phase_pd = pd.read_csv(phase_fn, index_col=False)
+    mnase_signal = mnase_pd['MNase'].values *40
+    mnase_pos = mnase_pd['Pos'].values
+    for exp_, tmp_pd in phase_pd.groupby('Experiment', sort=False):
+        for rep, tmp_pd2 in tmp_pd.groupby("Rep", sort=False):
+            figure_name = f'{figure_prefix}.Gene_Fraction_Phasing.{exp_}.{rep}.png'
+            time_list = list(tmp_pd2['Time'].unique())
+            time_list.sort()
+            for time_ in time_list:
+                tmp_pd3 = tmp_pd2.loc[tmp_pd2['Time'] == time_]
+                xpos = tmp_pd3['Pos'].values
+                rate = tmp_pd3['SmoothedValue'].values
+                name = f'{time_}'
+                g = sns.lineplot(x=xpos, y=rate, label=name, lw=.5)
+                g.fill_between(mnase_pos, y1=mnase_signal,
+                            y2=0, label='$\mathrm{MNase}$', color='.8')
+                
+                _ = g.set(xlim=xlim, ylim=[0, 100], title=f'{exp_} {rep}',
+                        xticks=np.arange(xlim[0], xlim[1], 250),
+                        xlabel=xlabel, ylabel=ylabel)
+                g.legend(loc='upper right',  prop={'size':9}, bbox_to_anchor=(1, 1))
+            plt.subplots_adjust(left=0.17, right=.95, top=.98, bottom=.13)
+            plt.savefig(figure_name)
+            plt.close()
+    del phase_pd
+    del mnase_pd
+    gc.collect()
+    logger.info('Phasing plots of smoothed gene methylation rates are plotted.')
+
 
 def plot_feature_relative_rate_boxplot(
     figure_prefix: str,
@@ -626,7 +664,8 @@ def plot_figures(config: str, is_user: bool = False):
     timecourse_xlim = config_dict['plot_parameter']['timecourse_xlim']
     phasing_xlabel = config_dict['plot_parameter']['phasing_xlabel']
     phasing_xlim = config_dict['plot_parameter']['phasing_xlim']
-    phasing_ylabel = config_dict['plot_parameter']['phasing_ylabel']    
+    phasing_ylabel = config_dict['plot_parameter']['phasing_ylabel']
+    phasing_ylabel_fraction = config_dict['plot_parameter']['phasing_ylabel_fraction']
     phasing_ylim = config_dict['plot_parameter']['phasing_ylim']
     phasing_ylim_sinewave = config_dict['plot_parameter']['phasing_ylim_sinewave']
 
@@ -683,7 +722,13 @@ def plot_figures(config: str, is_user: bool = False):
     plot_phasing_rate_with_mnase(
         figure_prefix, phase_fn,
         mnase_fn, phasing_xlabel, phasing_ylabel, phasing_ylim, phasing_xlim)
-    
+    phase_fn = os.path.join(csv_folder, f'{prefix}.gene.1kb_average_fraction.smooth.csv')
+    plot_phasing_frac_with_mnase(
+        figure_prefix, phase_fn,
+        mnase_fn, phasing_xlabel, 
+        phasing_ylabel_fraction, phasing_xlim
+    )
+
     # feature boxplot
     subfig_folder = os.path.join(figure_folder, 'Feature_boxplot')
     os.makedirs(subfig_folder, exist_ok=True)
