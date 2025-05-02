@@ -59,5 +59,6 @@ timecourse_xlim = [0, 240]
 phasing_xlabel = "Relative to +1 Nucleosome (bp)"
 phasing_xlim = [-1000, 1000]
 phasing_ylabel = "Relative Methylation Rate"
+phasing_ylabel_fraction = "Fraction Methylated\n(Cut by DpnI)"
 phasing_ylim = [0, 2]
 phasing_ylim_sinewave = [0, 1.75]

@@ -1,0 +1,11 @@
+experiment,rep,time,filename
+arrested WT,Rep1,0,250405_808H_6_1kb.Filter_0min.bw
+arrested WT,Rep1,30,250405_808H_6_1kb.Filter_30min.bw
+arrested WT,Rep1,60,250405_808H_6_1kb.Filter_60min.bw
+arrested WT,Rep1,120,250405_808H_6_1kb.Filter_120min.bw
+arrested WT,Rep1,240,250405_808H_6_1kb.Filter_240min.bw
+arrested WT,Rep2,0,250405_808P_2_1kb.Filter_0min.bw
+arrested WT,Rep2,30,250405_808P_2_1kb.Filter_30min.bw
+arrested WT,Rep2,60,250405_808P_2_1kb.Filter_60min.bw
+arrested WT,Rep2,120,250405_808P_2_1kb.Filter_120min.bw
+arrested WT,Rep2,240,250405_808P_2_1kb.Filter_240min.bw

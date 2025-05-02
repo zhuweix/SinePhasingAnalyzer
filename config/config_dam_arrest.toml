@@ -1,16 +1,16 @@
 [data]
 # Folder containing bigwig files
-bigwig_folder = "test/bigwig/Dam"
+bigwig_folder = "test/bigwig/Dam_arrest"
 # Sample sheet containing the metadata of the bigwig files
-sample_sheet = "config/Dam_samplesheet.csv"
+sample_sheet = "config/Dam_arrest_samplesheet.csv"
 
 [output]
 # prefix of the output files
 # SQL database file will be named as <prefix>.db
 # CSV files will be named as <prefix>.<table name>.csv
-prefix = "Live_Dam"
+prefix = "Live_Dam_arrest"
 # Folder to store the output files
-output_folder = "test/Dam"
+output_folder = "test/Dam_arrest"
 
 [parameter]
 # Normalization method
@@ -59,6 +59,6 @@ timecourse_xlim = [0, 240]
 phasing_xlabel = "Relative to +1 Nucleosome (bp)"
 phasing_xlim = [-1000, 1000]
 phasing_ylabel = "Relative Methylation Rate"
-phasing_ylabel_fraction = "Fraction Methylated (%)\n(Cut by DpnI)"
+phasing_ylabel_fraction = "Fraction Methylated\n(Cut by DpnI)"
 phasing_ylim = [0, 2]
 phasing_ylim_sinewave = [0, 1.75]

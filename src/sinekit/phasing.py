@@ -589,7 +589,7 @@ def sine_fit_gene_quantile(
                 for (exp_, rep, time_), tmp_data_pd2 in tmp_data_pd.groupby(by=['Experiment', 'Rep', 'Time'], sort=False):
                     tmp_data = np.zeros(xmax-xmin+1)
                     tmp_cov = np.zeros(xmax-xmin+1)
-                    for p, v in zip(tmp_data_pd['Pos'], tmp_data_pd['Value']):
+                    for p, v in zip(tmp_data_pd2['Pos'], tmp_data_pd2['Value']):
                         tmp_data[p - xmin] += v
                         tmp_cov[p - xmin] += 1
                     valid = tmp_cov > 0

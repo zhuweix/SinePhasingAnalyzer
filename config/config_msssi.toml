@@ -40,7 +40,7 @@ other_table = "resource/sacCer3.OtherFeature.csv"
 # RNA-seq data from GSE110413 study
 # Format: gzipped CSV containing RNA-seq measurements
 # Source: GEO accession GSE110413
-rnaseq_table = "resource/GSE110413_SM_25min_rnaseq.csv.gz"
+rnaseq_table = "resource/GSE110413_SM_25min_rnaseq_norRNA.csv.gz"
 
 # MNase-seq data for nucleosome positioning
 # Format: CSV containing MNase-seq data from NAR 2016 study
@@ -58,5 +58,6 @@ timecourse_xlim = [0, 240]
 phasing_xlabel = "Relative to +1 Nucleosome (bp)"
 phasing_xlim = [-1000, 1000]
 phasing_ylabel = "Relative Methylation Rate"
+phasing_ylabel_fraction = "Fraction Methylated"
 phasing_ylim = [0, 3.2]
 phasing_ylim_sinewave = [0, 3]
