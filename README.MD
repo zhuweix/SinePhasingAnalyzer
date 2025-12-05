@@ -88,7 +88,8 @@ Default is --no-use-userquantile which uses the quantiles calculated during the 
 
 
 ## CITATION
-TBD
+
+Zhuwei Xu et al. ,The ISW1 and CHD1 chromatin remodelers suppress global nucleosome dynamics in living yeast cells.Sci. Adv.11,eadw7108(2025).DOI:10.1126/sciadv.adw7108
 
 ## License
 
