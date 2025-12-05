@@ -30,17 +30,17 @@ sinekit full CONFIG.TOML
 ```toml
 [data]
 # Folder containing bigwig files
-bigwig_folder = <PATH TO BIGWIG FOLDER>
+bigwig_folder = "<PATH TO BIGWIG FOLDER>"
 # Sample sheet containing the metadata of the bigwig files
-sample_sheet = <PATH TO SAMPLE SHEET CSV>
+sample_sheet = "<PATH TO SAMPLE SHEET CSV>"
 
 [output]
 # prefix of the output files
 # SQL database file will be named as <prefix>.db
 # CSV files will be named as <prefix>.<table name>.csv
-prefix = <PREFIX OF OUTPUT FILES>
+prefix = "<PREFIX OF OUTPUT FILES>"
 # Folder to store the output files
-output_folder = <PATH TO OUTPUT FOLDER>
+output_folder = "<PATH TO OUTPUT FOLDER>"
 ```
 
 
