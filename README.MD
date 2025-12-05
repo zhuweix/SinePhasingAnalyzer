@@ -2,6 +2,8 @@
 
 A comprehensive Python CLI tool for performing phasing analysis using decaying sine model.
 
+**[Overview](#overview) | [Installation](#installation) | [Commands](#commander) | [Citation](#citation)**
+
 ## Overview
 
 Sine Phasing Analyzer is designed to process genomic data and perform methylation analysis through a series of commands that can be run individually or as a complete pipeline.
@@ -87,7 +89,7 @@ Default is --no-use-userquantile which uses the quantiles calculated during the 
 
 
 
-## CITATION
+## Citation
 
 Zhuwei Xu et al. ,The ISW1 and CHD1 chromatin remodelers suppress global nucleosome dynamics in living yeast cells.Sci. Adv.11,eadw7108(2025).DOI:10.1126/sciadv.adw7108
 
