@@ -2,7 +2,7 @@
 
 A comprehensive Python CLI tool for performing phasing analysis using decaying sine model.
 
-**[Overview](#overview) | [Installation](#installation) | [Commands](#commander) | [Citation](#citation)**
+**[Overview](#overview) | [Installation](#installation) | [Commands](#commands) | [Citation](#citation)**
 
 ## Overview
 
